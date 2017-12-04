@@ -1,0 +1,39 @@
+# Tomcat
+server:
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+  port: 8888
+# mysql
+spring:
+  # 环境 dev|test|pro
+  profiles:
+    active: dev
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+  # jackson时间格式化
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: false
+  #kafka 配置
+#    kafka:
+#      bootstrap-servers: 192.168.80.131:9092,192.168.80.132:9092,192.168.80.133:9092
+#      consumer:
+#        group-id: group01
+#        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      producer:
+#        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+# Mybatis配置
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  configLocation: classpath:mybatis.xml
+
+#logging.level.io.renren=DEBUG
+
