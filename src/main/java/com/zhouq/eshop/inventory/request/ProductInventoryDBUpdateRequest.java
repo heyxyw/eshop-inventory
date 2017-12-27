@@ -44,4 +44,9 @@ public class ProductInventoryDBUpdateRequest implements Request{
     public Integer getProductId() {
         return productInventory.getProductId();
     }
+
+    @Override
+    public boolean isForceRefresh() {
+        return false;
+    }
 }

@@ -58,7 +58,7 @@ public class ProductInventoryController {
         ProductInventory productInventory = null;
 
         try {
-            Request request = new ProductInventoryCacheRefreshRequest(productId, productInventoryService);
+            Request request = new ProductInventoryCacheRefreshRequest(productId, productInventoryService,false);
             requertAsyncProcessService.process(request);
             //将请求扔给service 异步去处理以后，就需要while(true) 一会儿，在这里等待
             //尝试等待前面商品库存的更新操作,同时缓存刷新的操作.将最新的数据刷新到缓存中,
@@ -86,6 +86,20 @@ public class ProductInventoryController {
             //尝试 从数据库中读取
             productInventory = productInventoryService.findProductInventory(productId);
             if (productInventory != null){
+
+                //刷新缓存
+                // 这个过程中,实际上还是一个读取操作的过程,但是没有放到队列中去串行处理,还是会存在不一致问题.
+                // 当代码执行到这里,存在三种情况
+                // 1.上一次是读请求,数据刷入到redis 中,但是redis LRU 算法 给清空掉了,标志位还是false
+                // 所以此时 下一个读请求 在缓存中拿不到数据,再放一个request 队列进去,让数据刷新一下.
+                // 2.可能在200 ms 内,读请求在队列中一直积压,没有等待到它执行.
+                // 所以就直接查一次库,然后给队列塞进去一盒刷新缓存的请求.
+                // 3.数据库本身就没有,存在缓存穿透.请求到达 mysql
+
+                //构造一个强制刷新缓存的请求
+                request = new ProductInventoryCacheRefreshRequest(productId, productInventoryService,true);
+                requertAsyncProcessService.process(request);
+
                 return productInventory;
             }
 
