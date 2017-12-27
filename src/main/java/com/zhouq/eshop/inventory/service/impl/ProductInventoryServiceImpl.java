@@ -6,6 +6,7 @@ import com.zhouq.eshop.inventory.model.ProductInventory;
 import com.zhouq.eshop.inventory.service.ProductInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * 商品库存service 实现
@@ -42,7 +43,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
      */
     @Override
     public void removeProductInventoryCache(ProductInventory productInventory) {
-        redisDao.delete("product:inventory:"+productInventory.getProductId());
+        redisDao.delete("product:inventory:" + productInventory.getProductId());
     }
 
     /**
@@ -64,6 +65,29 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
      */
     @Override
     public void setProductInventroyCache(ProductInventory productInventory) {
-        redisDao.set("product:inventory:"+productInventory.getProductId(), String.valueOf(productInventory.getInventoryCnt()));
+        redisDao.set("product:inventory:" + productInventory.getProductId(), String.valueOf(productInventory.getInventoryCnt()));
+    }
+
+    /**
+     * 获取商品缓存数据
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public ProductInventory getProductInventoryCache(Integer productId) {
+        Long inventoryCnt = 0L;
+        String key = "product:inventory" + productId;
+        String s = redisDao.get(key);
+        if (!StringUtils.isEmpty(s)){
+            try {
+                inventoryCnt = Long.valueOf(s);
+                return new ProductInventory(productId,inventoryCnt);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }

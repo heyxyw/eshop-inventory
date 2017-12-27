@@ -6,7 +6,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 
 /**
- * todo
+ * 执行请求的工作线程
  *
  * @author zhouq
  * @email zhouqiao@gmail.com
@@ -30,9 +30,13 @@ public class RequestProcessorThread implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         while (true){
+            //ArrayBlockingQueue
+            // Blocking 如果队列满了，获取是空了 那么都会在执行操作的时候，阻塞住
+            Request request = queue.take();
+            // 执行request 操作
+            request.process();
             break;
         }
-
         return null;
     }
 }
