@@ -1,13 +1,10 @@
 package com.zhouq.eshop.inventory.service.impl;
 
-import com.zhouq.eshop.inventory.request.ProductInventoryCacheRefreshRequest;
-import com.zhouq.eshop.inventory.request.ProductInventoryDBUpdateRequest;
 import com.zhouq.eshop.inventory.request.Request;
 import com.zhouq.eshop.inventory.request.RequestQueue;
 import com.zhouq.eshop.inventory.service.RequertAsyncProcessService;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -47,6 +44,8 @@ public class RequertAsyncProcessServiceImpl implements RequertAsyncProcessServic
 
         //对hash 值进行取模，将hash 值路由到指定的 内存队列中去
         int index = (requestQueue.queueSize() - 1) & hash;
+
+        System.out.println("=============日志===========: 路由内存队列,商品id="+productId+",队列索引="+index);
 
         return requestQueue.getQueue(index);
     }

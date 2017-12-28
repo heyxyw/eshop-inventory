@@ -36,6 +36,8 @@ public class ProductInventoryController {
      */
     @PutMapping("/updateProductInventory")
     public Response updateProductInventory(ProductInventory productInventory) {
+        System.out.println("=============日志===========: 接收商品库存更新请求,id="+productInventory.getProductId());
+
         try {
             Request request = new ProductInventoryDBUpdateRequest(productInventory, productInventoryService);
             requertAsyncProcessService.process(request);

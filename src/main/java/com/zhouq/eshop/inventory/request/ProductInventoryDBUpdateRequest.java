@@ -34,6 +34,7 @@ public class ProductInventoryDBUpdateRequest implements Request{
 
     @Override
     public void process() {
+        System.out.println("=============日志===========: 数据库更新请求开始执行,商品id="+productInventory.getProductId());
         //删除 redis 缓存
         productInventoryService.removeProductInventoryCache(productInventory);
         // 修改数据库数据
